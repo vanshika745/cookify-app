@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ recipe.name }} | Cookify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">🍲</div>
+                <div>
+                    <h1>Cookify</h1>
+                    <p>Smart recipe finder</p>
+                </div>
+            </div>
+
+            <nav class="side-nav">
+                <a class="side-link" href="{{ url_for('home') }}">🏠 Home</a>
+                <a class="side-link active" href="#">📖 Recipe Details</a>
+                <a class="side-link" href="{{ url_for('home') }}#recipes">🍽️ Recipes</a>
+                <a class="side-link" href="{{ url_for('home') }}#stats">📊 Stats</a>
+            </nav>
+
+            <div class="sidebar-card">
+                <div class="sidebar-card-emoji">✨</div>
+                <h3>Cook something amazing today!</h3>
+                <p>Find ingredients, nutrition, steps, tips, and serving ideas in one place.</p>
+                <a class="cta-mini" href="{{ url_for('home') }}#search">Search Again →</a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div class="search-pill">
+                    <span>🔎</span>
+                    <span>Search any dish... (e.g. Paneer Paratha, Rajma Chawal, Pasta)</span>
+                </div>
+
+                <div class="topbar-actions">
+                    <button class="icon-btn" type="button">♡</button>
+                    <a class="profile" href="{{ url_for('home') }}" style="text-decoration:none; color:inherit;">
+                        <div class="avatar">V</div>
+                        <div>
+                            <strong>Vanshika</strong>
+                            <span>Home Chef</span>
+                        </div>
+                    </a>
+                </div>
+            </header>
+
+            <section class="detail-search-card">
+                <div class="section-head compact" style="margin-bottom: 14px;">
+                    <div>
+                        <p class="section-kicker">Dish Details ✨</p>
+                        <h2>Search any recipe and open full details instantly</h2>
+                    </div>
+                    <span class="count-pill">1 recipe</span>
+                </div>
+
+                <form class="detail-search-form" method="POST" action="{{ url_for('home') }}">
+                    <input
+                        type="text"
+                        name="ingredients"
+                        placeholder="Search any dish... (e.g. Paneer Paratha, Rajma Chawal, Pasta)"
+                    />
+                    <button type="submit">Search</button>
+                </form>
+
+                <p class="detail-search-help">
+                    Type any dish name and get nutrition, ingredients, recipe steps, serving ideas, tips, and notes.
+                </p>
+            </section>
+
+            <section class="recipe-hero-card">
+                <div class="recipe-hero-left">
+                    <div class="dish-badge">
+                        <span class="dish-badge-emoji">{{ recipe.emoji }}</span>
+                    </div>
+                </div>
+
+                <div class="recipe-hero-center">
+                    <div class="recipe-title-row">
+                        <h1>{{ recipe.name }}</h1>
+                        <span class="diet-pill">{{ recipe.diet|title }}</span>
+                    </div>
+
+                    <div class="rating-row">
+                        <span>⭐ {{ recipe.rating }}</span>
+                        <span>{{ recipe.difficulty }}</span>
+                        <span>{{ recipe.category|title }}</span>
+                    </div>
+
+                    <p class="recipe-description">
+                        {{ recipe.description }}
+                    </p>
+
+                    <div class="info-pills">
+                        <div class="mini-info">
+                            <span>⏱ Prep Time</span>
+                            <strong>{{ recipe.time }} mins</strong>
+                        </div>
+                        <div class="mini-info">
+                            <span>🔥 Cook Time</span>
+                            <strong>{{ recipe.time }} mins</strong>
+                        </div>
+                        <div class="mini-info">
+                            <span>🍽 Servings</span>
+                            <strong>{{ recipe.get('servings', 2) }}</strong>
+                        </div>
+                        <div class="mini-info">
+                            <span>🛠 Resources</span>
+                            <strong>{{ recipe.resources | join(', ') }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-hero-right">
+                    <div class="health-ring-card">
+                        <div class="health-ring">
+                            <div class="health-ring-center">
+                                <strong>{{ recipe.get('health_score', 78) }}</strong>
+                                <span>/100</span>
+                            </div>
+                        </div>
+                        <p>Health Score</p>
+                        <span class="good-choice-pill">Good Choice 👍</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-grid">
+                <div class="detail-card nutrition-card">
+                    <h3>Nutrition Facts <span>(Per Serving)</span></h3>
+                    <ul class="fact-list">
+                        <li><span>Calories</span><strong>{{ recipe.get('nutrition', {}).get('calories', '320 kcal') }}</strong></li>
+                        <li><span>Protein</span><strong>{{ recipe.get('nutrition', {}).get('protein', '12 g') }}</strong></li>
+                        <li><span>Total Fat</span><strong>{{ recipe.get('nutrition', {}).get('fat', '14 g') }}</strong></li>
+                        <li><span>Carbohydrates</span><strong>{{ recipe.get('nutrition', {}).get('carbs', '35 g') }}</strong></li>
+                        <li><span>Dietary Fiber</span><strong>{{ recipe.get('nutrition', {}).get('fiber', '3 g') }}</strong></li>
+                        <li><span>Sugars</span><strong>{{ recipe.get('nutrition', {}).get('sugar', '2 g') }}</strong></li>
+                        <li><span>Sodium</span><strong>{{ recipe.get('nutrition', {}).get('sodium', '480 mg') }}</strong></li>
+                    </ul>
+                    <p class="card-note">*Approximate values</p>
+                </div>
+
+                <div class="detail-card vitamins-card">
+                    <h3>Vitamins & Minerals <span>(Per Serving)</span></h3>
+                    <ul class="fact-list">
+                        <li><span>Vitamin A</span><strong>{{ recipe.get('nutrition', {}).get('vitamin_a', '120 mcg') }}</strong></li>
+                        <li><span>Vitamin C</span><strong>{{ recipe.get('nutrition', {}).get('vitamin_c', '2 mg') }}</strong></li>
+                        <li><span>Calcium</span><strong>{{ recipe.get('nutrition', {}).get('calcium', '180 mg') }}</strong></li>
+                        <li><span>Iron</span><strong>{{ recipe.get('nutrition', {}).get('iron', '1.8 mg') }}</strong></li>
+                        <li><span>Potassium</span><strong>{{ recipe.get('nutrition', {}).get('potassium', '220 mg') }}</strong></li>
+                        <li><span>Magnesium</span><strong>{{ recipe.get('nutrition', {}).get('magnesium', '28 mg') }}</strong></li>
+                        <li><span>Zinc</span><strong>{{ recipe.get('nutrition', {}).get('zinc', '1.2 mg') }}</strong></li>
+                    </ul>
+                    <p class="card-note">*Daily values vary by serving size</p>
+                </div>
+
+                <div class="detail-card ingredients-card">
+                    <h3>Ingredients</h3>
+                    <ul class="bullet-list">
+                        {% for ingredient in recipe.ingredients %}
+                        <li>{{ ingredient }}</li>
+                        {% endfor %}
+                    </ul>
+                    <a class="text-btn" href="#steps">View Full Recipe →</a>
+                </div>
+
+                <div class="detail-card macro-card">
+                    <h3>Recipe Summary</h3>
+                    <div class="macro-box">
+                        <div class="macro-item">
+                            <span>Diet Type</span>
+                            <strong>{{ recipe.diet|title }}</strong>
+                        </div>
+                        <div class="macro-item">
+                            <span>Best For</span>
+                            <strong>{{ recipe.get('best_for', 'Breakfast, Lunch') }}</strong>
+                        </div>
+                        <div class="macro-item">
+                            <span>Allergens</span>
+                            <strong>{{ recipe.get('allergens', 'Milk, Gluten') }}</strong>
+                        </div>
+                        <div class="macro-item">
+                            <span>Storage</span>
+                            <strong>{{ recipe.get('storage', 'Refrigerate for 1 day') }}</strong>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        {{ recipe.get('summary', 'Balanced meal with good flavour and nutrition.') }}
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-grid lower-grid" id="steps">
+                <div class="detail-card steps-card">
+                    <h3>Step by Step Recipe</h3>
+                    <ol class="step-list">
+                        {% for step in recipe.steps %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <div class="detail-card health-card">
+                    <h3>Health & Diet Info</h3>
+                    <ul class="fact-list">
+                        <li><span>Good For</span><strong>{{ recipe.get('good_for', 'Weight Maintenance') }}</strong></li>
+                        <li><span>Allergens</span><strong>{{ recipe.get('allergens', 'Milk, Gluten') }}</strong></li>
+                        <li><span>GI Index</span><strong>{{ recipe.get('gi_index', 'Medium') }}</strong></li>
+                        <li><span>Best Time</span><strong>{{ recipe.get('best_time', 'Breakfast, Lunch') }}</strong></li>
+                    </ul>
+                </div>
+
+                <div class="detail-card serving-card">
+                    <h3>Serving Suggestions</h3>
+                    <ul class="check-list">
+                        {% for item in recipe.serving %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="detail-card tips-card">
+                    <h3>Tips & Notes</h3>
+                    <ul class="bullet-list">
+                        {% for tip in recipe.tips %}
+                        <li>{{ tip }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+
+            <section class="detail-card ai-summary-card">
+                <h3>AI Chef Summary</h3>
+                <p>
+                    {{ recipe.get('summary', recipe.name ~ ' is a balanced and tasty recipe with useful nutrition, clear ingredients, and easy cooking steps.') }}
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

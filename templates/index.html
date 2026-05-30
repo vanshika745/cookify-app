@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cookify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">🍲</div>
+                <div>
+                    <h1>Cookify</h1>
+                    <p>Smart recipe finder</p>
+                </div>
+            </div>
+
+            <nav class="side-nav">
+                <a class="side-link active" href="#home">🏠 Home</a>
+                <a class="side-link" href="#chef">🤖 AI Chef</a>
+                <a class="side-link" href="#recipes">📖 Recipes</a>
+                <a class="side-link" href="#filters">🎛️ Filters</a>
+             
+            </nav>
+
+            <div class="sidebar-card">
+                <div class="sidebar-card-emoji">✨</div>
+                <h3>Cook something amazing today!</h3>
+                <p>Enter ingredients and Cookify will suggest easy recipes for your day.</p>
+                <a class="cta-mini" href="#search">Let’s Cook →</a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div class="search-pill">
+                    <span>🔎</span>
+                    <span>Search ingredients, recipes, cuisines...</span>
+                </div>
+
+                <div class="topbar-actions">
+                
+                
+                    <div class="profile">
+                        <div class="avatar">V</div>
+                        <div>
+                            <strong>Vanshika</strong>
+                            <span>Home Chef</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="hero" id="home">
+                <div class="hero-left">
+                    <p class="eyebrow">Hello Vanshika! 👋</p>
+                    <h2>What are <span>we cooking today?</span></h2>
+                    <p class="hero-text">
+                        Enter ingredients you already have and get best recipe ideas instantly.
+                    </p>
+
+                    <form id="search" class="search-form" method="POST" action="/">
+                        <div class="search-input-row">
+                            <input
+                                type="text"
+                                name="ingredients"
+                                placeholder="e.g. tomato, pasta, cheese, onion..."
+                                value="{{ entered_ingredients or '' }}"
+                            />
+                            <button type="submit">Find Recipes 🔍</button>
+                        </div>
+
+                        <div class="filter-chips" id="filters">
+                            <select name="diet">
+                                <option value="all" {% if selected_diet == 'all' %}selected{% endif %}>All</option>
+                                <option value="veg" {% if selected_diet == 'veg' %}selected{% endif %}>Veg</option>
+                                <option value="non-veg" {% if selected_diet == 'non-veg' %}selected{% endif %}>Non Veg</option>
+                            </select>
+
+                            <select name="filter_mode">
+                                <option value="all" {% if selected_mode == 'all' %}selected{% endif %}>All Recipes</option>
+                                <option value="quick" {% if selected_mode == 'quick' %}selected{% endif %}>Quick</option>
+                                <option value="healthy" {% if selected_mode == 'healthy' %}selected{% endif %}>Healthy</option>
+                                <option value="air fryer" {% if selected_mode == 'air fryer' %}selected{% endif %}>Air Fryer</option>
+                                <option value="microwave" {% if selected_mode == 'microwave' %}selected{% endif %}>Microwave</option>
+                            </select>
+                        </div>
+
+                        <div class="resource-row">
+                            <span class="resource-title">Available Resources</span>
+                            <label>
+                                <input type="checkbox" name="resources" value="stove" {% if 'stove' in selected_resources %}checked{% endif %}>
+                                Stove
+                            </label>
+                            <label>
+                                <input type="checkbox" name="resources" value="microwave" {% if 'microwave' in selected_resources %}checked{% endif %}>
+                                Microwave
+                            </label>
+                            <label>
+                                <input type="checkbox" name="resources" value="air fryer" {% if 'air fryer' in selected_resources %}checked{% endif %}>
+                                Air Fryer
+                            </label>
+                        </div>
+                    </form>
+                    <section class="mini-panel quiz-panel">
+    <div class="section-head compact">
+        <div>
+            <p class="section-kicker">🧠 Food Quiz of the Day</p>
+            <h2>Test your cooking knowledge</h2>
+        </div>
+        <span class="count-pill">Day {{ quiz_day or 1 }}</span>
+    </div>
+
+    <div class="quiz-card">
+        <div class="quiz-top-row">
+            <span class="quiz-progress">Question {{ quiz_index or 1 }}/10</span>
+            <span class="quiz-score">Score: {{ quiz_score or 0 }}</span>
+        </div>
+
+        <h3 class="quiz-question">
+            {{ quiz_question or "Which vitamin is highest in oranges?" }}
+        </h3>
+
+        <div class="quiz-options">
+            <button type="button" class="quiz-option">Vitamin A</button>
+            <button type="button" class="quiz-option">Vitamin C</button>
+            <button type="button" class="quiz-option">Vitamin D</button>
+            <button type="button" class="quiz-option">Vitamin K</button>
+        </div>
+
+        <div class="quiz-actions">
+            <button type="button" class="quiz-next-btn">Next Question →</button>
+        </div>
+    </div>
+</section>
+                </div>
+
+                <div class="hero-right" id="chef">
+                    <div class="ai-card">
+                        <div class="ai-card-head">
+                            <div>
+                                <p class="mini-label">AI Chef Suggests ✨</p>
+                                <h3>Best matches for you</h3>
+                            </div>
+                            <span class="pill-new">New</span>
+                        </div>
+
+                        <p class="ai-message">
+                            Based on your ingredients, we found these perfect recipes for you.
+                        </p>
+
+                        <div class="ai-list">
+                            {% for recipe in recommended_recipes[:3] %}
+                            <div class="ai-list-item">
+                                <div class="ai-badge">{{ recipe.emoji }}</div>
+                                <div class="ai-list-text">
+                                    <strong>{{ recipe.name }}</strong>
+                                    <span>{{ recipe.time }} mins • {{ recipe.difficulty }} • ⭐ {{ recipe.rating }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <a class="view-all-btn" href="#recipes">View All Suggestions →</a>
+                    </div>
+
+                    <div class="summary-card" id="stats">
+                        <div class="section-title-row">
+                            <h3>Today’s Summary</h3>
+                            <span>📊</span>
+                        </div>
+
+                        <div class="summary-grid">
+                            <div class="summary-box">
+                                <span>Recipes Found</span>
+                                <strong>{{ stats.total_recipes }}</strong>
+                            </div>
+                            <div class="summary-box">
+                                <span>Shown Now</span>
+                                <strong>{{ stats.shown_recipes }}</strong>
+                            </div>
+                            <div class="summary-box">
+                                <span>Avg Rating</span>
+                                <strong>{{ stats.avg_rating }}</strong>
+                            </div>
+                            <div class="summary-box">
+                                <span>Healthy Recipes</span>
+                                <strong>{{ stats.healthy_recipes }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="quote-box">
+                            “Good food is the foundation of genuine happiness.”
+                        </div>
+                    </div>
+
+                    <div class="tip-card">
+                        <div class="section-title-row">
+                            <h3>Tip of the Day</h3>
+                            <span>💡</span>
+                        </div>
+                        <p>
+                            Add a pinch of lemon juice to pasta water to keep the flavour fresh and bright.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="showcase" id="recipes">
+                <div class="section-head">
+                    <div>
+                        <p class="section-kicker">Recommended For You</p>
+                        <h2>Recipe Suggestions</h2>
+                    </div>
+                    <span class="count-pill">{{ total }} recipes</span>
+                </div>
+
+                {% if recipes %}
+                <div class="recipes-grid">
+                    {% for recipe in recipes %}
+                    <article
+                        class="recipe-card"
+                        onclick="window.location.href='{{ url_for('recipe_detail', slug=recipe.slug) }}'"
+                        role="link"
+                        tabindex="0"
+                    >
+                        <div class="recipe-top">
+                            <div class="recipe-emoji">{{ recipe.emoji }}</div>
+                            <div class="recipe-name-wrap">
+                                <h3>{{ recipe.name }}</h3>
+                                <p>{{ recipe.description }}</p>
+                            </div>
+                        </div>
+
+                        <div class="recipe-meta">
+                            <span>⏱ {{ recipe.time }} mins</span>
+                            <span>⭐ {{ recipe.rating }}</span>
+                            <span class="diet-pill">{{ recipe.diet }}</span>
+                        </div>
+
+                        <div class="tag-row">
+                            {% for tag in recipe.tags[:3] %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+
+                        {% if recipe.match_percent %}
+                        <div class="match-bar">
+                            <span>Match: {{ recipe.match_percent }}%</span>
+                        </div>
+                        {% endif %}
+
+                        {% if recipe.matched %}
+                        <div class="small-list">
+                            <strong>Matched:</strong>
+                            <span>{{ recipe.matched | join(', ') }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if recipe.missing %}
+                        <div class="small-list muted">
+                            <strong>Missing:</strong>
+                            <span>{{ recipe.missing | join(', ') }}</span>
+                        </div>
+                        {% endif %}
+                    </article>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <h3>No matching recipes found</h3>
+                    <p>Try fewer filters or enter ingredients that match a recipe more closely.</p>
+                </div>
+                {% endif %}
+            </section>
+
+            <section class="extra-sections">
+                <div class="mini-panel">
+                    <div class="section-head compact">
+                        <div>
+                            <p class="section-kicker">Trending Recipes 🔥</p>
+                            <h2>Popular right now</h2>
+                        </div>
+                    </div>
+
+                    <div class="trend-strip">
+                        {% for recipe in trending_recipes %}
+                        <div class="trend-card">
+                            <div class="trend-emoji">{{ recipe.emoji }}</div>
+                            <h3>{{ recipe.name }}</h3>
+                            <p>{{ recipe.time }} mins • ⭐ {{ recipe.rating }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mini-panel">
+                    <div class="section-head compact">
+                        <div>
+                            <p class="section-kicker">Popular Ingredients</p>
+                            <h2>Used most often</h2>
+                        </div>
+                    </div>
+
+                    <div class="chip-cloud">
+                        {% for ingredient in top_ingredients[:18] %}
+                        <span class="chip">{{ ingredient }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+</body>
+</html>
